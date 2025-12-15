@@ -37,7 +37,7 @@ export async function createPost(data: PostCreationData) {
     tags: tagsArray,
   };
 
-  const newPost = addPostData(newPostData);
+  const newPost = await addPostData(newPostData);
   
   // Revalidate paths to show the new post
   revalidatePath('/');
@@ -54,7 +54,7 @@ export async function createPost(data: PostCreationData) {
 
 
 export async function deletePost(slug: string) {
-    const deletedPost = deletePostData(slug);
+    const deletedPost = await deletePostData(slug);
 
     if (deletedPost) {
         // Revalidate all paths where the post might have appeared
