@@ -4,7 +4,7 @@ import { getPostsByTag, getAllTags } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
-    const allTags = getAllTags();
+    const allTags = await getAllTags();
     return allTags.map((tag) => ({
       tag: tag.toLowerCase(),
     }));
@@ -16,15 +16,15 @@ type TagPageProps = {
   };
 };
 
-export default function TagPage({ params }: TagPageProps) {
-  const allTags = getAllTags();
+export default async function TagPage({ params }: TagPageProps) {
+  const allTags = await getAllTags();
   const tagName = allTags.find(t => t.toLowerCase() === params.tag);
 
   if (!tagName) {
     notFound();
   }
 
-  const posts = getPostsByTag(tagName);
+  const posts = await getPostsByTag(tagName);
   
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">

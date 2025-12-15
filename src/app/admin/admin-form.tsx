@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -49,7 +49,15 @@ export function AdminForm() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const allCategories = getAllCategories();
+  const [allCategories, setAllCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const categories = await getAllCategories();
+      setAllCategories(categories);
+    }
+    fetchCategories();
+  }, []);
 
   const form = useForm<AdminFormValues>({
     resolver: zodResolver(formSchema),

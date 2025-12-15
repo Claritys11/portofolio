@@ -4,7 +4,7 @@ import { getPostsByCategory, getAllCategories } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
-    const allCategories = getAllCategories();
+    const allCategories = await getAllCategories();
     return allCategories.map((category) => ({
       category: category.toLowerCase(),
     }));
@@ -16,15 +16,15 @@ type CategoryPageProps = {
   };
 };
 
-export default function CategoryPage({ params }: CategoryPageProps) {
-  const allCategories = getAllCategories();
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const allCategories = await getAllCategories();
   const categoryName = allCategories.find(c => c.toLowerCase() === params.category);
 
   if (!categoryName) {
     notFound();
   }
 
-  const posts = getPostsByCategory(categoryName);
+  const posts = await getPostsByCategory(categoryName);
   
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">

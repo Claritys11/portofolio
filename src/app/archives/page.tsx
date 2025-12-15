@@ -18,8 +18,8 @@ const groupPostsByYearMonth = (posts: Post[]) => {
 };
 
 
-export default function ArchivesPage() {
-  const posts = getAllPosts();
+export default async function ArchivesPage() {
+  const posts = await getAllPosts();
   const groupedPosts = groupPostsByYearMonth(posts);
 
   return (

@@ -4,12 +4,21 @@ import { useSearchParams } from 'next/navigation';
 import { ArticleCard } from '@/components/article-card';
 import { PageHeader } from '@/components/page-header';
 import { getAllPosts } from '@/lib/posts';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
+import type { Post } from '@/lib/types';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
-  const allPosts = useMemo(() => getAllPosts(), []);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      const posts = await getAllPosts();
+      setAllPosts(posts);
+    }
+    fetchPosts();
+  }, []);
 
   const filteredPosts = useMemo(() => {
     if (!query) {

@@ -16,25 +16,27 @@ const links: Link[] = [
 ];
 
 // This function now safely calls the server-only data fetching function.
-export function getAllPosts(): Post[] {
-  return getAllPostsData();
+export async function getAllPosts(): Promise<Post[]> {
+  return await getAllPostsData();
 }
 
-export function getPostBySlug(slug: string): Post | undefined {
-  const posts = getAllPosts();
+export async function getPostBySlug(slug: string): Promise<Post | undefined> {
+  const posts = await getAllPosts();
   return posts.find((post) => post.slug === slug);
 }
 
-export function getPostsByCategory(category: string): Post[] {
-    return getAllPosts().filter(post => post.category === category);
+export async function getPostsByCategory(category: string): Promise<Post[]> {
+    const posts = await getAllPosts();
+    return posts.filter(post => post.category === category);
 }
 
-export function getPostsByTag(tag: string): Post[] {
-    return getAllPosts().filter(post => post.tags.includes(tag));
+export async function getPostsByTag(tag: string): Promise<Post[]> {
+    const posts = await getAllPosts();
+    return posts.filter(post => post.tags.includes(tag));
 }
 
-export function getAllTags(): string[] {
-    const posts = getAllPosts();
+export async function getAllTags(): Promise<string[]> {
+    const posts = await getAllPosts();
     const allTags = new Set<string>();
     posts.forEach(post => {
         post.tags.forEach(tag => allTags.add(tag));
@@ -42,8 +44,8 @@ export function getAllTags(): string[] {
     return Array.from(allTags).sort();
 }
 
-export function getAllCategories(): string[] {
-    const posts = getAllPosts();
+export async function getAllCategories(): Promise<string[]> {
+    const posts = await getAllPosts();
     const allCategories = new Set<string>();
     posts.forEach(post => {
         allCategories.add(post.category);

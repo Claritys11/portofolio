@@ -9,7 +9,7 @@ import { DeletePostButton } from './delete-post-button';
 import { cookies } from 'next/headers';
 
 export async function generateStaticParams() {
-  const posts = getAllPosts();
+  const posts = await getAllPosts();
   return posts.map((post) => ({
     slug: post.slug,
   }));
@@ -21,8 +21,8 @@ type PostPageProps = {
   };
 };
 
-export default function PostPage({ params }: PostPageProps) {
-  const post = getPostBySlug(params.slug);
+export default async function PostPage({ params }: PostPageProps) {
+  const post = await getPostBySlug(params.slug);
   const cookieStore = cookies();
   const isAdmin = cookieStore.has('admin-auth');
 

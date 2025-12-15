@@ -2,8 +2,8 @@ import { PageHeader } from '@/components/page-header';
 import { SuggestionForm } from './suggestion-form';
 import { getAllPosts } from '@/lib/posts';
 
-export default function SuggestContentPage() {
-  const posts = getAllPosts();
+export default async function SuggestContentPage() {
+  const posts = await getAllPosts();
   const existingArticles = posts.map(post => `- ${post.title}`).join('\n');
 
   return (

@@ -32,7 +32,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getAuthor, getLinks, getAllTags, getAllCategories } from '@/lib/posts';
 import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
-import { FormEvent } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 const NavItem = ({
   href,
@@ -60,11 +60,23 @@ const NavItem = ({
 export function AppSidebar() {
   const author = getAuthor();
   const socialLinks = getLinks();
-  const allTags = getAllTags();
-  const allCategories = getAllCategories();
+  const [allTags, setAllTags] = useState<string[]>([]);
+  const [allCategories, setAllCategories] = useState<string[]>([]);
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    async function fetchData() {
+      const [tags, categories] = await Promise.all([
+        getAllTags(),
+        getAllCategories(),
+      ]);
+      setAllTags(tags);
+      setAllCategories(categories);
+    }
+    fetchData();
+  }, []);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
