@@ -3,7 +3,7 @@ import type { Post, Author, Link, Tag, Category } from './types';
 import { Github, Instagram, Linkedin } from 'lucide-react';
 
 const author: Author = {
-  name: 'Carlotta',
+  name: 'Claritys',
   description: 'Cybersecurity enthusiast & developer.',
   avatar: PlaceHolderImages.find((img) => img.id === 'avatar')!,
 };
