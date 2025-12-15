@@ -171,3 +171,20 @@ export function groupPostsByYear(posts: Post[]) {
     return acc;
   }, {} as Record<string, Post[]>);
 }
+
+// This is a mock function to simulate adding a post.
+// In a real application, this would interact with a database.
+export function addPost(post: Omit<Post, 'readingTime' | 'image'> & { imageUrl: string; imageHint: string }) {
+  const newPost: Post = {
+    ...post,
+    readingTime: Math.ceil(post.content.split(' ').length / 200),
+    image: {
+      id: `post-${posts.length + 1}`,
+      description: `Cover image for ${post.title}`,
+      imageUrl: post.imageUrl,
+      imageHint: post.imageHint,
+    },
+  };
+  posts.unshift(newPost); // Add to the beginning of the array
+  return newPost;
+}

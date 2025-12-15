@@ -12,6 +12,7 @@ import {
   Search,
   Tag,
   User,
+  ShieldCheck,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -152,6 +153,9 @@ export function AppSidebar() {
            <SidebarSeparator />
           <NavItem href="/suggest-content" icon={<PenSquare />}>
             Suggest Content
+          </NavItem>
+          <NavItem href="/admin" icon={<ShieldCheck />}>
+            Admin
           </NavItem>
         </SidebarMenu>
       </SidebarContent>
