@@ -6,6 +6,7 @@ import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Tag as TagIcon, Book } from 'lucide-react';
 import { DeletePostButton } from './delete-post-button';
+import { cookies } from 'next/headers';
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -22,6 +23,8 @@ type PostPageProps = {
 
 export default function PostPage({ params }: PostPageProps) {
   const post = getPostBySlug(params.slug);
+  const cookieStore = cookies();
+  const isAdmin = cookieStore.has('admin-auth');
 
   if (!post) {
     notFound();
@@ -82,9 +85,11 @@ export default function PostPage({ params }: PostPageProps) {
             ))}
           </div>
         </article>
-        <div className="mt-12 border-t pt-8">
-            <DeletePostButton slug={post.slug} />
-        </div>
+        {isAdmin && (
+            <div className="mt-12 border-t pt-8">
+                <DeletePostButton slug={post.slug} />
+            </div>
+        )}
       </main>
     </div>
   );
