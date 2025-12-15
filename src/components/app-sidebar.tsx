@@ -47,12 +47,12 @@ const NavItem = ({
   const isActive = pathname === href;
   return (
     <SidebarMenuItem>
-      <Link href={href} passHref legacyBehavior>
-        <SidebarMenuButton isActive={isActive}>
+      <SidebarMenuButton asChild isActive={isActive}>
+        <Link href={href}>
           {icon}
           <span>{children}</span>
-        </SidebarMenuButton>
-      </Link>
+        </Link>
+      </SidebarMenuButton>
     </SidebarMenuItem>
   );
 };
@@ -122,11 +122,11 @@ export function AppSidebar() {
             <SidebarMenuSub>
               {allCategories.map((category) => (
                 <SidebarMenuSubItem key={category}>
-                  <Link href={`/category/${category.toLowerCase()}`} passHref legacyBehavior>
-                    <SidebarMenuSubButton isActive={pathname.startsWith(`/category/${category.toLowerCase()}`)}>
+                  <SidebarMenuSubButton asChild isActive={pathname.startsWith(`/category/${category.toLowerCase()}`)}>
+                    <Link href={`/category/${category.toLowerCase()}`}>
                       {category}
-                    </SidebarMenuSubButton>
-                  </Link>
+                    </Link>
+                  </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
               ))}
             </SidebarMenuSub>
@@ -140,11 +140,11 @@ export function AppSidebar() {
             <SidebarMenuSub>
               {allTags.map((tag) => (
                 <SidebarMenuSubItem key={tag}>
-                  <Link href={`/tag/${tag.toLowerCase()}`} passHref legacyBehavior>
-                    <SidebarMenuSubButton isActive={pathname.startsWith(`/tag/${tag.toLowerCase()}`)}>
+                  <SidebarMenuSubButton asChild isActive={pathname.startsWith(`/tag/${tag.toLowerCase()}`)}>
+                    <Link href={`/tag/${tag.toLowerCase()}`}>
                       {tag}
-                    </SidebarMenuSubButton>
-                  </Link>
+                    </Link>
+                  </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
               ))}
             </SidebarMenuSub>
