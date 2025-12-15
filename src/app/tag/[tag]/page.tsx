@@ -1,10 +1,10 @@
 import { ArticleCard } from '@/components/article-card';
 import { PageHeader } from '@/components/page-header';
-import { getPostsByTag } from '@/lib/posts';
-import { allTags, Tag } from '@/lib/types';
+import { getPostsByTag, getAllTags } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
+    const allTags = getAllTags();
     return allTags.map((tag) => ({
       tag: tag.toLowerCase(),
     }));
@@ -17,6 +17,7 @@ type TagPageProps = {
 };
 
 export default function TagPage({ params }: TagPageProps) {
+  const allTags = getAllTags();
   const tagName = allTags.find(t => t.toLowerCase() === params.tag);
 
   if (!tagName) {

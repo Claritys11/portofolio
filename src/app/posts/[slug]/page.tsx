@@ -5,6 +5,7 @@ import { getAllPosts, getPostBySlug } from '@/lib/posts';
 import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Tag as TagIcon, Book } from 'lucide-react';
+import { DeletePostButton } from './delete-post-button';
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -81,6 +82,9 @@ export default function PostPage({ params }: PostPageProps) {
             ))}
           </div>
         </article>
+        <div className="mt-12 border-t pt-8">
+            <DeletePostButton slug={post.slug} />
+        </div>
       </main>
     </div>
   );

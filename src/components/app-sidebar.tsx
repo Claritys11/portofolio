@@ -29,8 +29,7 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { getAuthor, getLinks } from '@/lib/posts';
-import { allCategories, allTags } from '@/lib/types';
+import { getAuthor, getLinks, getAllTags, getAllCategories } from '@/lib/posts';
 import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
 import { FormEvent } from 'react';
@@ -61,6 +60,8 @@ const NavItem = ({
 export function AppSidebar() {
   const author = getAuthor();
   const socialLinks = getLinks();
+  const allTags = getAllTags();
+  const allCategories = getAllCategories();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();

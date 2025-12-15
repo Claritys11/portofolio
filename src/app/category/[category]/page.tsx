@@ -1,10 +1,10 @@
 import { ArticleCard } from '@/components/article-card';
 import { PageHeader } from '@/components/page-header';
-import { getPostsByCategory } from '@/lib/posts';
-import { allCategories, Category } from '@/lib/types';
+import { getPostsByCategory, getAllCategories } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
+    const allCategories = getAllCategories();
     return allCategories.map((category) => ({
       category: category.toLowerCase(),
     }));
@@ -17,6 +17,7 @@ type CategoryPageProps = {
 };
 
 export default function CategoryPage({ params }: CategoryPageProps) {
+  const allCategories = getAllCategories();
   const categoryName = allCategories.find(c => c.toLowerCase() === params.category);
 
   if (!categoryName) {

@@ -1,9 +1,9 @@
 import { PlaceHolderImages } from './placeholder-images';
-import type { Post, Author, Link, Tag, Category } from './types';
+import type { Post, Author, Link, Category } from './types';
 import { Github, Instagram, Linkedin } from 'lucide-react';
 
 const author: Author = {
-  name: 'Claritys',
+  name: 'Carlotta',
   description: 'Cybersecurity enthusiast & developer.',
   avatar: PlaceHolderImages.find((img) => img.id === 'avatar')!,
 };
@@ -14,7 +14,9 @@ const links: Link[] = [
   { name: 'LinkedIn', url: 'https://linkedin.com', icon: Linkedin },
 ];
 
-const posts: Post[] = [
+// In a real app, this would be a database.
+// For this prototype, we'll manage it in-memory.
+let posts: Post[] = [
   {
     slug: 'exploring-nextjs-app-router',
     title: 'Exploring the New Next.js App Router',
@@ -145,12 +147,28 @@ export function getPostBySlug(slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug);
 }
 
-export function getPostsByCategory(category: Category): Post[] {
+export function getPostsByCategory(category: string): Post[] {
     return getAllPosts().filter(post => post.category === category);
 }
 
-export function getPostsByTag(tag: Tag): Post[] {
+export function getPostsByTag(tag: string): Post[] {
     return getAllPosts().filter(post => post.tags.includes(tag));
+}
+
+export function getAllTags(): string[] {
+    const allTags = new Set<string>();
+    posts.forEach(post => {
+        post.tags.forEach(tag => allTags.add(tag));
+    });
+    return Array.from(allTags).sort();
+}
+
+export function getAllCategories(): string[] {
+    const allCategories = new Set<string>();
+    posts.forEach(post => {
+        allCategories.add(post.category);
+    });
+    return Array.from(allCategories).sort();
 }
 
 export function getAuthor(): Author {
@@ -172,8 +190,6 @@ export function groupPostsByYear(posts: Post[]) {
   }, {} as Record<string, Post[]>);
 }
 
-// This is a mock function to simulate adding a post.
-// In a real application, this would interact with a database.
 export function addPost(post: Omit<Post, 'readingTime' | 'image'> & { imageUrl: string; imageHint: string }) {
   const newPost: Post = {
     ...post,
@@ -187,4 +203,13 @@ export function addPost(post: Omit<Post, 'readingTime' | 'image'> & { imageUrl: 
   };
   posts.unshift(newPost); // Add to the beginning of the array
   return newPost;
+}
+
+export function deletePost(slug: string): Post | undefined {
+    const postIndex = posts.findIndex(p => p.slug === slug);
+    if (postIndex === -1) {
+        return undefined;
+    }
+    const [deletedPost] = posts.splice(postIndex, 1);
+    return deletedPost;
 }

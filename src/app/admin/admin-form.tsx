@@ -21,8 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { allCategories, allTags } from '@/lib/types';
-import { Checkbox } from '@/components/ui/checkbox';
+import { getAllCategories } from '@/lib/posts';
 import {
   Select,
   SelectContent,
@@ -38,10 +37,8 @@ const formSchema = z.object({
   slug: z.string().min(1, 'Slug is required.'),
   description: z.string().min(1, 'Description is required.'),
   content: z.string().min(1, 'Content is required.'),
-  category: z.enum(allCategories),
-  tags: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: 'You have to select at least one tag.',
-  }),
+  category: z.string().min(1, 'Category is required'),
+  tags: z.string().optional(),
   imageUrl: z.string().url('Please enter a valid URL.'),
   imageHint: z.string().min(1, 'Image hint is required.'),
 });
@@ -52,6 +49,7 @@ export function AdminForm() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const allCategories = getAllCategories();
 
   const form = useForm<AdminFormValues>({
     resolver: zodResolver(formSchema),
@@ -61,7 +59,7 @@ export function AdminForm() {
       description: '',
       content: '',
       category: 'Blog',
-      tags: [],
+      tags: '',
       imageUrl: '',
       imageHint: '',
     },
@@ -197,53 +195,19 @@ export function AdminForm() {
                 </FormItem>
               )}
             />
-             <FormField
+            <FormField
                 control={form.control}
                 name="tags"
-                render={() => (
+                render={({ field }) => (
                     <FormItem>
-                    <div className="mb-4">
-                        <FormLabel className="text-base">Tags</FormLabel>
+                        <FormLabel>Tags</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Web, SHS, International" {...field} />
+                        </FormControl>
                         <FormDescription>
-                        Select the tags that best fit your post.
+                            Enter tags separated by commas.
                         </FormDescription>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {allTags.map((item) => (
-                        <FormField
-                        key={item}
-                        control={form.control}
-                        name="tags"
-                        render={({ field }) => {
-                            return (
-                            <FormItem
-                                key={item}
-                                className="flex flex-row items-start space-x-3 space-y-0"
-                            >
-                                <FormControl>
-                                <Checkbox
-                                    checked={field.value?.includes(item)}
-                                    onCheckedChange={(checked) => {
-                                    return checked
-                                        ? field.onChange([...(field.value || []), item])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                            (value) => value !== item
-                                            )
-                                        )
-                                    }}
-                                />
-                                </FormControl>
-                                <FormLabel className="font-normal">
-                                {item}
-                                </FormLabel>
-                            </FormItem>
-                            )
-                        }}
-                        />
-                    ))}
-                    </div>
-                    <FormMessage />
+                        <FormMessage />
                     </FormItem>
                 )}
             />

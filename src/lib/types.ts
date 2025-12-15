@@ -1,10 +1,7 @@
 import type { ImagePlaceholder } from './placeholder-images';
 
-export type Tag = 'National' | 'SHS' | 'International' | 'Web' | 'Crypto' | 'Misc';
-export const allTags: Tag[] = ['National', 'SHS', 'International', 'Web', 'Crypto', 'Misc'];
-
-export type Category = 'Write-Up' | 'Blog';
-export const allCategories: Category[] = ['Write-Up', 'Blog'];
+export type Tag = string;
+export type Category = string;
 
 export type Post = {
   slug: string;
