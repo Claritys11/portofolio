@@ -1,5 +1,4 @@
-// @ts-nocheck
-'server-only';
+'use server';
 
 import type { Post } from './types';
 import fs from 'fs';
@@ -30,13 +29,13 @@ function writePosts(posts: Post[]) {
   }
 }
 
-export function getAllPostsData(): Post[] {
+export async function getAllPostsData(): Promise<Post[]> {
   const posts = readPosts();
   return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-export function addPostData(post: Omit<Post, 'readingTime' | 'image'> & { imageUrl: string; imageHint: string }) {
-  const posts = getAllPostsData();
+export async function addPostData(post: Omit<Post, 'readingTime' | 'image'> & { imageUrl: string; imageHint: string }) {
+  const posts = await getAllPostsData();
   const newPost: Post = {
     ...post,
     readingTime: Math.ceil(post.content.split(' ').length / 200),
@@ -52,8 +51,8 @@ export function addPostData(post: Omit<Post, 'readingTime' | 'image'> & { imageU
   return newPost;
 }
 
-export function deletePostData(slug: string): Post | undefined {
-    const posts = getAllPostsData();
+export async function deletePostData(slug: string): Promise<Post | undefined> {
+    const posts = await getAllPostsData();
     const postIndex = posts.findIndex(p => p.slug === slug);
     if (postIndex === -1) {
         return undefined;
