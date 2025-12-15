@@ -47,6 +47,7 @@ export async function createPost(data: PostCreationData) {
   newPost.tags.forEach(tag => {
     revalidatePath(`/tag/${tag.toLowerCase()}`);
   });
+  revalidatePath('/admin');
 
   return newPost;
 }
