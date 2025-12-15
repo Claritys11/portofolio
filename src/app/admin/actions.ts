@@ -1,6 +1,6 @@
 'use server';
 
-import { addPost, deletePost as deletePostFromDb } from '@/lib/posts';
+import { addPostData, deletePostData } from '@/lib/posts-data';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -37,7 +37,7 @@ export async function createPost(data: PostCreationData) {
     tags: tagsArray,
   };
 
-  const newPost = addPost(newPostData);
+  const newPost = addPostData(newPostData);
   
   // Revalidate paths to show the new post
   revalidatePath('/');
@@ -54,7 +54,7 @@ export async function createPost(data: PostCreationData) {
 
 
 export async function deletePost(slug: string) {
-    const deletedPost = deletePostFromDb(slug);
+    const deletedPost = deletePostData(slug);
 
     if (deletedPost) {
         // Revalidate all paths where the post might have appeared

@@ -1,0 +1,112 @@
+
+[
+  {
+    "slug": "exploring-nextjs-app-router",
+    "title": "Exploring the New Next.js App Router",
+    "description": "A deep dive into the new app router in Next.js 13, its features, and how it compares to the pages router.",
+    "date": "2023-10-26",
+    "category": "Blog",
+    "tags": [
+      "Web",
+      "National"
+    ],
+    "image": {
+      "id": "post-1",
+      "description": "Cover image for post 1",
+      "imageUrl": "https://i.ibb.co/QFgSwkR/ai-generated-8749439-1280.jpg",
+      "imageHint": "technology code"
+    },
+    "content": "\n      <h2 class=\"text-2xl font-bold mb-4\">Introduction</h2>\n      <p class=\"mb-4\">The Next.js App Router, introduced in version 13, is a significant evolution in how we build web applications with React. It leverages React Server Components to provide a more powerful and flexible architecture.</p>\n      <h2 class=\"text-2xl font-bold mb-4\">Key Features</h2>\n      <ul class=\"list-disc list-inside mb-4\">\n        <li>Server Components by default</li>\n        <li>Simplified data fetching with async/await</li>\n        <li>Nested layouts and route groups</li>\n        <li>Improved performance and smaller bundle sizes</li>\n      </ul>\n      <blockquote class=\"pl-4 italic border-l-4 my-4\">\n        \"The App Router has completely changed my development workflow for the better.\"\n      </blockquote>\n      <p>This post will walk you through setting up a new project with the App Router, creating layouts, fetching data, and deploying your application.</p>\n    "
+  },
+  {
+    "slug": "hackthebox-challenge-writeup",
+    "title": "HackTheBox - \"Lame\" Write-up",
+    "description": "A step-by-step walkthrough of the \"Lame\" machine on HackTheBox, covering enumeration, exploitation, and privilege escalation.",
+    "date": "2023-09-15",
+    "category": "Write-Up",
+    "tags": [
+      "SHS",
+      "Crypto"
+    ],
+    "image": {
+      "id": "post-2",
+      "description": "Cover image for post 2",
+      "imageUrl": "https://iili.io/fauKVVa.jpg",
+      "imageHint": "cyber security"
+    },
+    "content": "\n      <h2 class=\"text-2xl font-bold mb-4\">Initial Enumeration</h2>\n      <p class=\"mb-4\">We start with an Nmap scan to identify open ports and services running on the target machine.</p>\n      <pre><code class=\"language-bash\">nmap -sC -sV 10.10.10.3</code></pre>\n      <p class=\"mt-4\">The scan reveals an open FTP port with anonymous login enabled and an SMB service.</p>\n      <h2 class=\"text-2xl font-bold mb-4\">Exploitation</h2>\n      <p class=\"mb-4\">The vsftpd version 2.3.4 has a known backdoor. We can use Metasploit to exploit this vulnerability.</p>\n      <pre><code class=\"language-ruby\">use exploit/unix/ftp/vsftpd_234_backdoor</code></pre>\n      <p class=\"mt-4\">After setting the RHOSTS, we run the exploit to gain a root shell.</p>\n    "
+  },
+  {
+    "slug": "mastering-tailwind-css",
+    "title": "Mastering Tailwind CSS for Modern UIs",
+    "description": "Learn how to leverage Tailwind CSS to build beautiful, custom user interfaces without writing a single line of custom CSS.",
+    "date": "2023-08-01",
+    "category": "Blog",
+    "tags": [
+      "Web",
+      "International"
+    ],
+    "image": {
+      "id": "post-3",
+      "description": "Cover image for post 3",
+      "imageUrl": "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3ZWIlMjBkZXZlbG9wbWVudHxlbnwwfHx8fDE3NjU3NzMxMTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "web development"
+    },
+    "content": "\n      <h2 class=\"text-2xl font-bold mb-4\">The Utility-First Approach</h2>\n      <p class=\"mb-4\">Tailwind CSS is a utility-first CSS framework. Instead of pre-styled components, it provides low-level utility classes that you can compose to build any design.</p>\n      <h2 class=\"text-2xl font-bold mb-4\">Configuration and Customization</h2>\n      <p class=\"mb-4\">The <code>tailwind.config.js</code> file is the heart of your project. Here you can customize everything from colors and fonts to breakpoints and spacing.</p>\n      <p>This allows for creating a unique design system while maintaining the benefits of a utility-first workflow.</p>\n    "
+  },
+  {
+    "slug": "picoctf-2023-crypto-challenges",
+    "title": "PicoCTF 2023 - A Tour of Crypto Challenges",
+    "description": "A summary of my solutions for some of the interesting cryptography challenges from PicoCTF 2023.",
+    "date": "2023-07-20",
+    "category": "Write-Up",
+    "tags": [
+      "Crypto",
+      "National"
+    ],
+    "image": {
+      "id": "post-4",
+      "description": "Cover image for post 4",
+      "imageUrl": "https://images.unsplash.com/photo-1762163516269-3c143e04175c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxuZXR3b3JrJTIwc2VydmVyfGVufDB8fHx8MTc2NTY5NzE0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network server"
+    },
+    "content": "\n      <h2 class=\"text-2xl font-bold mb-4\">Challenge: \"Caesar Cipher 2\"</h2>\n      <p class=\"mb-4\">This was a fun twist on the classic Caesar cipher. The key rotated with each character. A simple Python script was all that was needed to brute-force the initial key and decode the flag.</p>\n      <h2 class=\"text-2xl font-bold mb-4\">Challenge: \"RSA Pop Quiz\"</h2>\n      <p class=\"mb-4\">This challenge tested fundamental knowledge of RSA. It involved calculating the private key 'd' given 'p', 'q', and 'e'.</p>\n    "
+  },
+  {
+    "slug": "setting-up-a-personal-blog",
+    "title": "How I Built This Blog",
+    "description": "A meta-post about the technology stack and design choices behind Code Chronicles, built with Next.js and Tailwind CSS.",
+    "date": "2023-06-05",
+    "category": "Blog",
+    "tags": [
+      "Web",
+      "Misc"
+    ],
+    "image": {
+      "id": "post-5",
+      "description": "Cover image for post 5",
+      "imageUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTc2NTY5MjAwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "artificial intelligence"
+    },
+    "content": "\n      <h2 class=\"text-2xl font-bold mb-4\">Technology Stack</h2>\n      <ul class=\"list-disc list-inside mb-4\">\n        <li>Framework: Next.js (App Router)</li>\n        <li>Styling: Tailwind CSS with shadcn/ui</li>\n        <li>Language: TypeScript</li>\n        <li>Deployment: Vercel</li>\n      </ul>\n      <h2 class=\"text-2xl font-bold mb-4\">Design Philosophy</h2>\n      <p>The goal was a clean, minimalist design with a focus on readability. The color scheme is professional, and the typography is chosen for clarity on screens.</p>\n    "
+  },
+  {
+    "slug": "intro-to-web-security",
+    "title": "An Introduction to Web Security Fundamentals",
+    "description": "Covering the basics of common web vulnerabilities like XSS, CSRF, and SQL Injection, and how to prevent them.",
+    "date": "2023-05-12",
+    "category": "Blog",
+    "tags": [
+      "Web",
+      "SHS",
+      "International"
+    ],
+    "image": {
+      "id": "post-6",
+      "description": "Cover image for post 6",
+      "imageUrl": "https://images.unsplash.com/photo-1620778185674-ad6058ab908b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibG9ja2NoYWluJTIwY3J5cHRvfGVufDB8fHx8MTc2NTc3OTExOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "blockchain crypto"
+    },
+    "content": "\n      <h2 class=\"text-2xl font-bold mb-4\">Cross-Site Scripting (XSS)</h2>\n      <p class=\"mb-4\">XSS occurs when an attacker injects malicious scripts into content that is then delivered to other users' browsers. The key to prevention is proper input validation and output encoding.</p>\n      <h2 class=\"text-2xl font-bold mb-4\">SQL Injection</h2>\n      <p class=\"mb-4\">This vulnerability allows an attacker to interfere with the queries that an application makes to its database. Using prepared statements or parameterized queries is the most effective defense.</p>\n    "
+  }
+]
