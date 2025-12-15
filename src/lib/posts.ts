@@ -1,16 +1,16 @@
 import { PlaceHolderImages } from './placeholder-images';
 import type { Post, Author, Link, Tag, Category } from './types';
-import { Github, Twitter, Linkedin } from 'lucide-react';
+import { Github, Instagram, Linkedin } from 'lucide-react';
 
 const author: Author = {
-  name: 'User',
+  name: 'Carlotta',
   description: 'Cybersecurity enthusiast & developer.',
   avatar: PlaceHolderImages.find((img) => img.id === 'avatar')!,
 };
 
 const links: Link[] = [
-  { name: 'GitHub', url: 'https://github.com', icon: Github },
-  { name: 'Twitter', url: 'https://twitter.com', icon: Twitter },
+  { name: 'GitHub', url: 'https://github.com/Claritys11', icon: Github },
+  { name: 'Instagram', url: 'https://instagram.com', icon: Instagram },
   { name: 'LinkedIn', url: 'https://linkedin.com', icon: Linkedin },
 ];
 

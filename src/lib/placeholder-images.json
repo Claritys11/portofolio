@@ -3,8 +3,8 @@
     {
       "id": "avatar",
       "description": "Author's avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1580027297294-1d66dae41078?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwb3J0cmFpdCUyMHBlcnNvbnxlbnwwfHx8fDE3NjU3NjU4OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "portrait person"
+      "imageUrl": "https://images.unsplash.com/photo-1557053910-d9eadeed1c58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2NTc3NTIwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
     },
     {
       "id": "post-1",
