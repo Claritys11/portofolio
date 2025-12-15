@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "avatar",
+      "description": "Author's avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1580027297294-1d66dae41078?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwb3J0cmFpdCUyMHBlcnNvbnxlbnwwfHx8fDE3NjU3NjU4OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "portrait person"
+    },
+    {
+      "id": "post-1",
+      "description": "Cover image for post 1",
+      "imageUrl": "https://images.unsplash.com/photo-1584949092454-fb69707150f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dGVjaG5vbG9neSUyMGNvZGV8ZW58MHx8fHwxNzY1NzU3NDk3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "technology code"
+    },
+    {
+      "id": "post-2",
+      "description": "Cover image for post 2",
+      "imageUrl": "https://images.unsplash.com/photo-1632910138458-5bf601f3835e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjeWJlciUyMHNlY3VyaXR5fGVufDB8fHx8MTc2NTcyMDM5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cyber security"
+    },
+    {
+      "id": "post-3",
+      "description": "Cover image for post 3",
+      "imageUrl": "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3ZWIlMjBkZXZlbG9wbWVudHxlbnwwfHx8fDE3NjU3NzMxMTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "web development"
+    },
+    {
+      "id": "post-4",
+      "description": "Cover image for post 4",
+      "imageUrl": "https://images.unsplash.com/photo-1762163516269-3c143e04175c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxuZXR3b3JrJTIwc2VydmVyfGVufDB8fHx8MTc2NTY5NzE0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network server"
+    },
+    {
+      "id": "post-5",
+      "description": "Cover image for post 5",
+      "imageUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTc2NTY5MjAwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "artificial intelligence"
+    },
+    {
+      "id": "post-6",
+      "description": "Cover image for post 6",
+      "imageUrl": "https://images.unsplash.com/photo-1620778185674-ad6058ab908b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibG9ja2NoYWluJTIwY3J5cHRvfGVufDB8fHx8MTc2NTc3OTExOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "blockchain crypto"
+    }
+  ]
 }
