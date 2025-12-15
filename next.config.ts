@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: 'i.pinimg.com',
         port: '',
         pathname: '/**',
@@ -43,6 +43,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'drive.google.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'freeimage.host',
         port: '',
         pathname: '/**',
       },
