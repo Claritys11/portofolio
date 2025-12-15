@@ -42,12 +42,14 @@ export async function createPost(data: PostCreationData) {
   // Revalidate paths to show the new post
   revalidatePath('/');
   revalidatePath('/archives');
+  revalidatePath('/admin');
   revalidatePath(`/posts/${newPost.slug}`);
+
+  // Revalidate the specific category and tag pages
   revalidatePath(`/category/${newPost.category.toLowerCase()}`);
   newPost.tags.forEach(tag => {
     revalidatePath(`/tag/${tag.toLowerCase()}`);
   });
-  revalidatePath('/admin');
 
   return newPost;
 }
@@ -60,12 +62,14 @@ export async function deletePost(slug: string) {
         // Revalidate all paths where the post might have appeared
         revalidatePath('/');
         revalidatePath('/archives');
+        revalidatePath('/admin');
         revalidatePath(`/posts/${slug}`);
+
+        // Revalidate the specific category and tag pages
         revalidatePath(`/category/${deletedPost.category.toLowerCase()}`);
         deletedPost.tags.forEach(tag => {
             revalidatePath(`/tag/${tag.toLowerCase()}`);
         });
-        revalidatePath('/admin'); // Revalidate admin to reflect changes
     }
 
     return { success: !!deletedPost };
