@@ -30,7 +30,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { createPost } from './actions';
-
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required.'),
@@ -39,7 +40,7 @@ const formSchema = z.object({
   content: z.string().min(1, 'Content is required.'),
   category: z.string().min(1, 'Category is required'),
   tags: z.string().optional(),
-  imageUrl: z.string().url('Please enter a valid URL.'),
+  imageUrl: z.string().url('Please enter a valid URL.').optional().or(z.literal('')),
   imageHint: z.string().min(1, 'Image hint is required.'),
 });
 
@@ -50,6 +51,9 @@ export function AdminForm() {
   const { toast } = useToast();
   const router = useRouter();
   const [allCategories, setAllCategories] = useState<string[]>([]);
+  const [imageSource, setImageSource] = useState<'url' | 'upload'>('url');
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -85,20 +89,73 @@ export function AdminForm() {
   
   async function onSubmit(values: AdminFormValues) {
     setLoading(true);
+    setUploadError(null);
+
+    let imageUrl = values.imageUrl;
+
+    if (imageSource === 'upload' && file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const uploadUrl = new URL('/api/upload', window.location.origin);
+
+        const response = await fetch(uploadUrl, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const responseText = await response.text();
+        console.log('Server response text:', responseText);
+
+        if (!response.ok) {
+            console.error('Server response was not ok:', responseText);
+            try {
+                const errorData = JSON.parse(responseText);
+                throw new Error(errorData.error || 'Image upload failed');
+            } catch (e) {
+                throw new Error(`Server returned a non-JSON error response: ${response.status} ${response.statusText}`);
+            }
+        }
+        
+        try {
+            const { url } = JSON.parse(responseText);
+            imageUrl = url;
+        } catch (error) {
+            throw new Error('Failed to parse JSON response from server.');
+        }
+
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+        setUploadError(errorMessage);
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: `An error occurred while uploading the image: ${errorMessage}`,
+        });
+        setLoading(false);
+        return;
+      }
+    }
+
+    const dataToSubmit = { ...values, imageUrl };
+    console.log('Submitting data:', dataToSubmit);
+
     try {
-      const newPost = await createPost(values);
+      const newPost = await createPost(dataToSubmit);
       toast({
         title: 'Success!',
         description: 'Your new blog post has been created.',
       });
-      // Redirect to the new post page
       router.push(`/posts/${newPost.slug}`);
     } catch (error) {
       console.error('Error creating post:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'An error occurred while creating the post. Please try again.',
+        description: `An error occurred while creating the post: ${errorMessage}`,
       });
     } finally {
       setLoading(false);
@@ -111,6 +168,12 @@ export function AdminForm() {
         <CardTitle>Create New Post</CardTitle>
       </CardHeader>
       <CardContent>
+        {uploadError && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong className="font-bold">Upload Error: </strong>
+                <span className="block sm:inline">{uploadError}</span>
+            </div>
+        )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -219,22 +282,57 @@ export function AdminForm() {
                     </FormItem>
                 )}
             />
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com/image.jpg" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    The URL for the post's cover image.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>Image</FormLabel>
+              <RadioGroup
+                defaultValue="url"
+                onValueChange={(value: 'url' | 'upload') => setImageSource(value)}
+                className="flex items-center space-x-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="url" id="url" />
+                  <Label htmlFor="url">URL</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="upload" id="upload" />
+                  <Label htmlFor="upload">Upload</Label>
+                </div>
+              </RadioGroup>
+            </FormItem>
+
+            {imageSource === 'url' && (
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.jpg" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      The URL for the post's cover image.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {imageSource === 'upload' && (
+              <FormItem>
+                <FormLabel>Image Upload</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Upload an image for the post's cover.
+                </FormDescription>
+              </FormItem>
+            )}
             <FormField
               control={form.control}
               name="imageHint"

@@ -2,9 +2,12 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getAuthor } from '@/lib/posts';
+import { getAllCertificates } from '@/lib/certificates';
 
 export default function AboutPage() {
   const author = getAuthor();
+  const certificates = getAllCertificates();
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <PageHeader
@@ -49,6 +52,26 @@ export default function AboutPage() {
                     </ul>
                 </div>
             </div>
+
+            {certificates.length > 0 && (
+              <div className="mt-12">
+                <h3 className="font-headline text-2xl font-semibold text-center">Certificates</h3>
+                <ul className="list-none p-0 mt-4 space-y-4 text-left">
+                  {certificates.map((cert, index) => (
+                    <li key={index} className="border-l-4 border-primary pl-4">
+                      <h4 className="font-bold text-lg">{cert.title}</h4>
+                      <p className="text-md text-muted-foreground">{cert.issuer} - {cert.year}</p>
+                      {cert.url && (
+                        <a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+                          View Certificate
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
           </CardContent>
         </Card>
       </main>

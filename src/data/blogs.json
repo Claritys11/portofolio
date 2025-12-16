@@ -1,5 +1,25 @@
 [
   {
+    "title": "rawr",
+    "slug": "rawr",
+    "description": "awr",
+    "content": "rawr",
+    "imageUrl": "https://assets-au-01.kc-usercontent.com/0a5c9512-a993-020c-49e0-57aca041fd7a/2816b6b5-db9b-4afb-8942-0a35a731b403/article-cat-meows-mean.jpg",
+    "imageHint": "rawrwawrr",
+    "date": "2025-12-16",
+    "category": "Blog",
+    "tags": [
+      "rawr"
+    ],
+    "readingTime": 1,
+    "image": {
+      "id": "post-7",
+      "description": "Cover image for rawr",
+      "imageUrl": "https://assets-au-01.kc-usercontent.com/0a5c9512-a993-020c-49e0-57aca041fd7a/2816b6b5-db9b-4afb-8942-0a35a731b403/article-cat-meows-mean.jpg",
+      "imageHint": "rawrwawrr"
+    }
+  },
+  {
     "slug": "exploring-nextjs-app-router",
     "title": "Exploring the New Next.js App Router",
     "description": "A deep dive into the new app router in Next.js 13, its features, and how it compares to the pages router.",

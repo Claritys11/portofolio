@@ -11,9 +11,9 @@ const formSchema = z.object({
     slug: z.string().min(1),
     description: z.string().min(1),
     content: z.string().min(1),
-    category: z.string().min(1), // Category can be dynamic now too
-    tags: z.string().optional(), // Comma-separated tags
-    imageUrl: z.string().url(),
+    category: z.string().min(1),
+    tags: z.string().optional(),
+    imageUrl: z.string().url().optional().or(z.literal('')),
     imageHint: z.string().min(1),
 });
 
@@ -22,6 +22,7 @@ type PostCreationData = z.infer<typeof formSchema>;
 export async function createPost(data: PostCreationData) {
   const validatedData = formSchema.safeParse(data);
   if (!validatedData.success) {
+    console.error("Validation failed:", validatedData.error.flatten());
     throw new Error('Invalid data submitted.');
   }
 
@@ -88,8 +89,10 @@ export async function login(prevState: { error: string } | undefined, formData: 
   }
 
   const { password } = validatedFields.data;
+  
+  const validPasswords = [process.env.SECRET_PASSWORD, process.env.SECRET_PASSWORD_2].filter(Boolean);
 
-  if (password === process.env.SECRET_PASSWORD) {
+  if (validPasswords.includes(password)) {
     cookies().set('admin-auth', 'true', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

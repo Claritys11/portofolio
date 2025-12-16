@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Code Chronicles',
+  title: "Elaang's site",
   description:
     'A personal blog for articles, CTF write-ups, and personal notes.',
 };

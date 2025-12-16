@@ -26,3 +26,10 @@ export type Link = {
   url: string;
   icon: React.ComponentType<{ className?: string }>;
 };
+
+export type Certificate = {
+  title: string;
+  issuer: string;
+  year: string;
+  url?: string;
+};
