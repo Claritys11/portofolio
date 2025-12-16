@@ -8,7 +8,7 @@ export default async function Home() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <PageHeader
-        title="Code Chronicles"
+        title="Elaang's"
         description="A personal blog for articles, CTF write-ups, and everything in between."
       />
       <main className="py-8">

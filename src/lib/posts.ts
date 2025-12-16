@@ -4,14 +4,14 @@ import { Github, Instagram, Linkedin } from 'lucide-react';
 import { getAllPostsData } from './posts-data';
 
 const author: Author = {
-  name: 'Carlotta',
+  name: 'Claritys',
   description: 'Cybersecurity enthusiast & developer.',
   avatar: PlaceHolderImages.find((img) => img.id === 'avatar')!,
 };
 
 const links: Link[] = [
   { name: 'GitHub', url: 'https://github.com/Claritys11', icon: Github },
-  { name: 'Instagram', url: 'https://instagram.com', icon: Instagram },
+  { name: 'Instagram', url: 'https://www.instagram.com/elanggslibaw/', icon: Instagram },
   { name: 'LinkedIn', url: 'https://linkedin.com', icon: Linkedin },
 ];
 
