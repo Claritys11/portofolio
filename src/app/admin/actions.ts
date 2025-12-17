@@ -66,7 +66,6 @@ export async function deleteCertificate(id: string) {
     revalidatePath('/about');
 }
 
-
 // --- AUTHENTICATION ACTION ---
 export async function login(prevState: { error: string | undefined }, formData: FormData) {
     try {

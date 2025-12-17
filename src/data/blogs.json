@@ -109,7 +109,7 @@
     "image": {
       "id": "post-6",
       "description": "Cover image for post 6",
-      "imageUrl": "https://images.unsplash.com/photo-1620778185674-ad6058ab908b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibG9ja2NoYWluJTIwY3J5cHRvfGVufDB8fHx8MTc2NTc3OTExOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1620778185674-ad6058ab0908b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibG9ja2NoYWluJTIwY3J5cHRvfGVufDB8fHx8MTc2NTc3OTExOHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "blockchain crypto"
     },
     "content": "\n      <h2 class=\"text-2xl font-bold mb-4\">Cross-Site Scripting (XSS)</h2>\n      <p class=\"mb-4\">XSS occurs when an attacker injects malicious scripts into content that is then delivered to other users' browsers. The key to prevention is proper input validation and output encoding.</p>\n      <h2 class=\"text-2xl font-bold mb-4\">SQL Injection</h2>\n      <p class=\"mb-4\">This vulnerability allows an attacker to interfere with the queries that an application makes to its database. Using prepared statements or parameterized queries is the most effective defense.</p>\n    ",
