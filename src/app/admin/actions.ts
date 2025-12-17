@@ -112,7 +112,7 @@ export async function login(prevState: { error: string | undefined }, formData: 
       const validPasswords = [process.env.SECRET_PASSWORD, process.env.SECRET_PASSWORD_2].filter(Boolean);
   
       if (validPasswords.includes(password)) {
-        await (await cookies()).set('admin-auth', 'true', { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 60 * 60 * 24, path: '/' });
+        (await cookies()).set('admin-auth', 'true', { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 60 * 60 * 24, path: '/' });
         redirect('/admin');
       } else {
         return { error: 'Incorrect secret.' };
