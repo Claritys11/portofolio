@@ -111,7 +111,7 @@ export async function authenticate(prevState: { error: string | undefined }, for
       const validPasswords = [process.env.SECRET_PASSWORD, process.env.SECRET_PASSWORD_2].filter(Boolean);
   
       if (validPasswords.includes(password)) {
-        cookies().set('admin-auth', 'true', {
+        (await cookies()).set('admin-auth', 'true', {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           maxAge: 60 * 60 * 24, // 1 day
