@@ -1,106 +1,130 @@
 'use server';
 
-import { addPostData, deletePostData } from '@/lib/posts-data';
-import { z } from 'zod';
+import { promises as fs } from 'fs';
+import { join } from 'path';
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import type { Certificate, Post } from '@/lib/types';
 
-const formSchema = z.object({
-    title: z.string().min(1),
-    slug: z.string().min(1),
-    description: z.string().min(1),
-    content: z.string().min(1),
-    category: z.string().min(1),
-    tags: z.string().optional(),
-    imageUrl: z.string().url().optional().or(z.literal('')),
-    imageHint: z.string().min(1),
-});
+// --- FILE PATHS ---
+const POSTS_DATA_PATH = join(process.cwd(), 'src/data/blogs.json');
+const CERTIFICATES_DATA_PATH = join(process.cwd(), 'src/lib/certificates-data.ts');
 
-type PostCreationData = z.infer<typeof formSchema>;
-
-export async function createPost(data: PostCreationData) {
-  const validatedData = formSchema.safeParse(data);
-  if (!validatedData.success) {
-    console.error("Validation failed:", validatedData.error.flatten());
-    throw new Error('Invalid data submitted.');
-  }
-
-  const { tags, category, ...restOfData } = validatedData.data;
-
-  // Process tags from comma-separated string to array
-  const tagsArray = tags ? tags.split(',').map(tag => tag.trim()).filter(Boolean) : [];
-
-  const newPostData = {
-    ...restOfData,
-    date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-    category: category,
-    tags: tagsArray,
-  };
-
-  const newPost = await addPostData(newPostData);
-  
-  // Revalidate paths to show the new post
-  revalidatePath('/');
-  revalidatePath('/archives');
-  revalidatePath('/admin');
-  revalidatePath(`/posts/${newPost.slug}`);
-
-  // Revalidate the specific category and tag pages
-  revalidatePath(`/category/${newPost.category.toLowerCase()}`);
-  newPost.tags.forEach(tag => {
-    revalidatePath(`/tag/${tag.toLowerCase()}`);
-  });
-
-  return newPost;
+// --- POST HELPERS ---
+async function readPosts(): Promise<Post[]> {
+  const fileContent = await fs.readFile(POSTS_DATA_PATH, 'utf-8');
+  return JSON.parse(fileContent);
 }
 
+async function writePosts(posts: Post[]): Promise<void> {
+  await fs.writeFile(POSTS_DATA_PATH, JSON.stringify(posts, null, 2), 'utf-8');
+}
+
+// --- CERTIFICATE HELPERS ---
+async function readCertificates(): Promise<Certificate[]> {
+    try {
+        const fileContent = await fs.readFile(CERTIFICATES_DATA_PATH, 'utf-8');
+        const match = fileContent.match(/export const certificates: Certificate\[] = ([\s\S]*?);/);
+        if (!match) return [];
+        // This use of eval is not safe for production.
+        return eval(match[1]);
+    } catch (error) {
+        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: unknown }).code === 'ENOENT') {
+            return [];
+        }
+        throw error;
+    }
+}
+
+async function writeCertificates(certificates: Certificate[]): Promise<void> {
+    const content = `import type { Certificate } from './types';\n\nexport const certificates: Certificate[] = ${JSON.stringify(certificates, null, 2)};\n`;
+    await fs.writeFile(CERTIFICATES_DATA_PATH, content, 'utf-8');
+}
+
+// --- POST ACTIONS ---
+export async function createPost(data: Omit<Post, 'slug'>) {
+    const posts = await readPosts();
+    const slug = data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const newPost = { ...data, slug };
+    posts.unshift(newPost);
+    await writePosts(posts);
+    revalidatePath('/');
+    return newPost;
+}
+
+export async function updatePost(slug: string, data: Partial<Post>) {
+    const posts = await readPosts();
+    const postIndex = posts.findIndex(p => p.slug === slug);
+    if (postIndex === -1) throw new Error('Post not found');
+    
+    const newSlug = data.title ? data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : slug;
+    posts[postIndex] = { ...posts[postIndex], ...data, slug: newSlug };
+
+    await writePosts(posts);
+    revalidatePath('/');
+    revalidatePath(`/posts/${slug}`);
+    revalidatePath(`/posts/${newSlug}`);
+    return posts[postIndex];
+}
 
 export async function deletePost(slug: string) {
-    const deletedPost = await deletePostData(slug);
-
-    if (deletedPost) {
-        // Revalidate all paths where the post might have appeared
-        revalidatePath('/');
-        revalidatePath('/archives');
-        revalidatePath('/admin');
-        revalidatePath(`/posts/${slug}`);
-
-        // Revalidate the specific category and tag pages
-        revalidatePath(`/category/${deletedPost.category.toLowerCase()}`);
-        deletedPost.tags.forEach(tag => {
-            revalidatePath(`/tag/${tag.toLowerCase()}`);
-        });
-    }
-
-    return { success: !!deletedPost };
+    let posts = await readPosts();
+    posts = posts.filter(post => post.slug !== slug);
+    await writePosts(posts);
+    revalidatePath('/');
+    revalidatePath(`/posts/${slug}`);
 }
 
-const loginSchema = z.object({
-  password: z.string(),
-});
+// --- CERTIFICATE ACTIONS ---
+export async function createCertificate(data: Omit<Certificate, 'id'>) {
+    const certificates = await readCertificates();
+    const newCertificate = { ...data, id: Date.now().toString() };
+    certificates.push(newCertificate);
+    await writeCertificates(certificates);
+    revalidatePath('/about');
+}
 
-export async function login(prevState: { error: string } | undefined, formData: FormData) {
-  const values = Object.fromEntries(formData.entries());
-  const validatedFields = loginSchema.safeParse(values);
+export async function updateCertificate(index: number, data: Certificate) {
+    const certificates = await readCertificates();
+    if (index < 0 || index >= certificates.length) throw new Error('Certificate not found');
+    certificates[index] = data;
+    await writeCertificates(certificates);
+    revalidatePath('/about');
+}
 
-  if (!validatedFields.success) {
-    return { error: 'Invalid input!' };
-  }
+export async function deleteCertificate(index: number) {
+    const certificates = await readCertificates();
+    if (index < 0 || index >= certificates.length) throw new Error('Certificate not found');
+    certificates.splice(index, 1);
+    await writeCertificates(certificates);
+    revalidatePath('/about');
+}
 
-  const { password } = validatedFields.data;
+// --- AUTHENTICATION ACTION ---
+export async function login(prevState: { error: string | undefined }, formData: FormData) {
+    try {
+      const validatedFields = z.object({ password: z.string() }).safeParse({ password: formData.get('password') });
+      if (!validatedFields.success) return { error: 'Invalid input.' };
+      const { password } = validatedFields.data;
+      
+      console.log("--- DEBUGGING PASSWORD ---");
+      console.log("Password from form:", password);
+      console.log("SECRET_PASSWORD from env:", process.env.SECRET_PASSWORD);
+      console.log("SECRET_PASSWORD_2 from env:", process.env.SECRET_PASSWORD_2);
+
+      const validPasswords = [process.env.SECRET_PASSWORD, process.env.SECRET_PASSWORD_2].filter(Boolean);
   
-  const validPasswords = [process.env.SECRET_PASSWORD, process.env.SECRET_PASSWORD_2].filter(Boolean);
-
-  if (validPasswords.includes(password)) {
-    cookies().set('admin-auth', 'true', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24, // 1 day
-      path: '/',
-    });
-    redirect('/admin');
-  } else {
-    return { error: 'Incorrect secret.' };
-  }
+      if (validPasswords.includes(password)) {
+        await (await cookies()).set('admin-auth', 'true', { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 60 * 60 * 24, path: '/' });
+        redirect('/admin');
+      } else {
+        return { error: 'Incorrect secret.' };
+      }
+    } catch (error) {
+        if (error instanceof Error && (error as any).type === 'NEXT_REDIRECT') throw error;
+        console.error('Authentication error:', error);
+        return { error: 'An unexpected error occurred.' };
+    }
 }
