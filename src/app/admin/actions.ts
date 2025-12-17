@@ -108,11 +108,6 @@ export async function login(prevState: { error: string | undefined }, formData: 
       const validatedFields = z.object({ password: z.string() }).safeParse({ password: formData.get('password') });
       if (!validatedFields.success) return { error: 'Invalid input.' };
       const { password } = validatedFields.data;
-      
-      console.log("--- DEBUGGING PASSWORD ---");
-      console.log("Password from form:", password);
-      console.log("SECRET_PASSWORD from env:", process.env.SECRET_PASSWORD);
-      console.log("SECRET_PASSWORD_2 from env:", process.env.SECRET_PASSWORD_2);
 
       const validPasswords = [process.env.SECRET_PASSWORD, process.env.SECRET_PASSWORD_2].filter(Boolean);
   
