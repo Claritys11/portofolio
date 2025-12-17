@@ -8,21 +8,28 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { Certificate, Post } from '@/lib/types';
 
-// --- DATA FILE PATHS ---
-const CERTIFICATES_DATA_PATH = join(process.cwd(), 'src/lib/certificates-data.ts');
+// --- FILE PATHS ---
 const POSTS_DATA_PATH = join(process.cwd(), 'src/data/blogs.json');
+const CERTIFICATES_DATA_PATH = join(process.cwd(), 'src/lib/certificates-data.ts');
 
-// --- DATA HELPERS ---
-async function readData<T>(path: string): Promise<T[]> {
+// --- POST HELPERS ---
+async function readPosts(): Promise<Post[]> {
+  const fileContent = await fs.readFile(POSTS_DATA_PATH, 'utf-8');
+  return JSON.parse(fileContent);
+}
+
+async function writePosts(posts: Post[]): Promise<void> {
+  await fs.writeFile(POSTS_DATA_PATH, JSON.stringify(posts, null, 2), 'utf-8');
+}
+
+// --- CERTIFICATE HELPERS ---
+async function readCertificates(): Promise<Certificate[]> {
     try {
-        const fileContent = await fs.readFile(path, 'utf-8');
-        if (path.endsWith('.ts')) {
-            const match = fileContent.match(/export const [a-zA-Z]+: [a-zA-Z]+<[a-zA-Z]+>\[] = ([\s\S]*?);/);
-            if (!match) return [];
-            // In a real app, this would be a proper parser or a different data source.
-            return eval(match[1]);
-        }
-        return JSON.parse(fileContent);
+        const fileContent = await fs.readFile(CERTIFICATES_DATA_PATH, 'utf-8');
+        const match = fileContent.match(/export const certificates: Certificate\[] = ([\s\S]*?);/);
+        if (!match) return [];
+        // This use of eval is not safe for production.
+        return eval(match[1]);
     } catch (error) {
         if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: unknown }).code === 'ENOENT') {
             return [];
@@ -31,81 +38,68 @@ async function readData<T>(path: string): Promise<T[]> {
     }
 }
 
-async function writePostsFile(posts: Post[]): Promise<void> {
-    await fs.writeFile(POSTS_DATA_PATH, JSON.stringify(posts, null, 2), 'utf-8');
-    revalidatePath('/');
-    revalidatePath('/archives');
-}
-
-async function writeCertificatesFile(certificates: Certificate[]): Promise<void> {
-    const fileContent = `import type { Certificate } from '../types';\n\nexport const certificates: Certificate[] = ${JSON.stringify(certificates, null, 2)};\n`;
-    await fs.writeFile(CERTIFICATES_DATA_PATH, fileContent, 'utf-8');
-    revalidatePath('/about');
-    revalidatePath('/admin/certificates');
+async function writeCertificates(certificates: Certificate[]): Promise<void> {
+    const content = `import type { Certificate } from './types';\n\nexport const certificates: Certificate[] = ${JSON.stringify(certificates, null, 2)};\n`;
+    await fs.writeFile(CERTIFICATES_DATA_PATH, content, 'utf-8');
 }
 
 // --- POST ACTIONS ---
 export async function createPost(data: Omit<Post, 'slug'>) {
-    const posts = await readData<Post>(POSTS_DATA_PATH);
+    const posts = await readPosts();
     const slug = data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     const newPost = { ...data, slug };
     posts.unshift(newPost);
-    await writePostsFile(posts);
+    await writePosts(posts);
     revalidatePath('/');
-    revalidatePath('/archives');
     return newPost;
 }
 
 export async function updatePost(slug: string, data: Partial<Post>) {
-    const posts = await readData<Post>(POSTS_DATA_PATH);
+    const posts = await readPosts();
     const postIndex = posts.findIndex(p => p.slug === slug);
     if (postIndex === -1) throw new Error('Post not found');
     
     const newSlug = data.title ? data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : slug;
     posts[postIndex] = { ...posts[postIndex], ...data, slug: newSlug };
 
-    await writePostsFile(posts);
+    await writePosts(posts);
+    revalidatePath('/');
     revalidatePath(`/posts/${slug}`);
     revalidatePath(`/posts/${newSlug}`);
-    revalidatePath('/');
-
     return posts[postIndex];
 }
 
 export async function deletePost(slug: string) {
-    const posts = await readData<Post>(POSTS_DATA_PATH);
-    const updatedPosts = posts.filter(post => post.slug !== slug);
-    if (posts.length === updatedPosts.length) {
-        return { success: false, message: 'Post not found.' };
-    }
-    await writePostsFile(updatedPosts);
-    revalidatePath(`/posts/${slug}`);
+    let posts = await readPosts();
+    posts = posts.filter(post => post.slug !== slug);
+    await writePosts(posts);
     revalidatePath('/');
-    return { success: true, message: 'Post deleted successfully.' };
+    revalidatePath(`/posts/${slug}`);
 }
 
 // --- CERTIFICATE ACTIONS ---
 export async function createCertificate(data: Omit<Certificate, 'id'>) {
-    const certificates = await readData<Certificate>(CERTIFICATES_DATA_PATH);
+    const certificates = await readCertificates();
     const newCertificate = { ...data, id: Date.now().toString() };
     certificates.push(newCertificate);
-    await writeCertificatesFile(certificates);
-    return newCertificate;
+    await writeCertificates(certificates);
+    revalidatePath('/about');
 }
 
 export async function updateCertificate(index: number, data: Certificate) {
-    const certificates = await readData<Certificate>(CERTIFICATES_DATA_PATH);
+    const certificates = await readCertificates();
     if (index < 0 || index >= certificates.length) throw new Error('Certificate not found');
     certificates[index] = data;
-    await writeCertificatesFile(certificates);
-    return data;
+    await writeCertificates(certificates);
+    revalidatePath('/about');
 }
 
 export async function deleteCertificate(index: number) {
-    const certificates = await readData<Certificate>(CERTIFICATES_DATA_PATH);
+    const certificates = await readCertificates();
     if (index < 0 || index >= certificates.length) throw new Error('Certificate not found');
     certificates.splice(index, 1);
-    await writeCertificatesFile(certificates);
+    await writeCertificates(certificates);
+    revalidatePath('/about');
 }
 
 // --- AUTHENTICATION ACTION ---
@@ -115,17 +109,15 @@ export async function login(prevState: { error: string | undefined }, formData: 
       if (!validatedFields.success) return { error: 'Invalid input.' };
       const { password } = validatedFields.data;
       
-      // --- Debugging Lines ---
-      console.log("Attempting login...");
+      console.log("--- DEBUGGING PASSWORD ---");
       console.log("Password from form:", password);
       console.log("SECRET_PASSWORD from env:", process.env.SECRET_PASSWORD);
       console.log("SECRET_PASSWORD_2 from env:", process.env.SECRET_PASSWORD_2);
-      // --- End Debugging Lines ---
 
       const validPasswords = [process.env.SECRET_PASSWORD, process.env.SECRET_PASSWORD_2].filter(Boolean);
   
       if (validPasswords.includes(password)) {
-        (await cookies()).set('admin-auth', 'true', { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 60 * 60 * 24, path: '/' });
+        await (await cookies()).set('admin-auth', 'true', { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 60 * 60 * 24, path: '/' });
         redirect('/admin');
       } else {
         return { error: 'Incorrect secret.' };
