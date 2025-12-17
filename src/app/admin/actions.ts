@@ -118,7 +118,9 @@ export async function login(prevState: { error: string | undefined }, formData: 
         return { error: 'Incorrect secret.' };
       }
     } catch (error) {
-        if (error instanceof Error && (error as any).type === 'NEXT_REDIRECT') throw error;
+        if (error instanceof Error && (error as any).type === 'NEXT_REDIRECT') {
+            throw error;
+        }
         console.error('Authentication error:', error);
         return { error: 'An unexpected error occurred.' };
     }
