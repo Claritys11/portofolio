@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   Archive,
   Book,
@@ -25,14 +25,14 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarInput,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getAuthor, getLinks, getAllTags, getAllCategories } from '@/lib/posts';
 import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
-import { FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { SearchInput } from './search-input';
 
 const NavItem = ({
   href,
@@ -63,8 +63,6 @@ export function AppSidebar() {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [allCategories, setAllCategories] = useState<string[]>([]);
   const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function fetchData() {
@@ -77,15 +75,6 @@ export function AppSidebar() {
     }
     fetchData();
   }, []);
-
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const query = formData.get('search') as string;
-    if (query) {
-      router.push(`/search?q=${encodeURIComponent(query)}`);
-    }
-  };
 
   return (
     <Sidebar>
@@ -108,15 +97,9 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <form onSubmit={handleSearch} className="relative m-2">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <SidebarInput
-            name="search"
-            placeholder="Search articles..."
-            className="pl-9"
-            defaultValue={searchParams.get('q') || ''}
-          />
-        </form>
+        <Suspense fallback={<div>Loading search...</div>}>
+          <SearchInput />
+        </Suspense>
         <SidebarMenu>
           <NavItem href="/" icon={<Home />}>
             Home
