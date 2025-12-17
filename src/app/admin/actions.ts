@@ -80,6 +80,8 @@ export async function deletePost(slug: string) {
             return { success: false, message: 'Post not found.' };
         }
         await writePostsFile(updatedPosts);
+        revalidatePath(`/posts/${slug}`);
+        revalidatePath('/');
         return { success: true, message: 'Post deleted successfully.' };
     } catch (error) {
         console.error('Error deleting post:', error);
@@ -89,7 +91,7 @@ export async function deletePost(slug: string) {
 
 
 // --- AUTHENTICATION ACTION ---
-export async function authenticate(prevState: { error: string | undefined }, formData: FormData) {
+export async function login(prevState: { error: string | undefined }, formData: FormData) {
     try {
       const validatedFields = z.object({ password: z.string() }).safeParse({
         password: formData.get('password'),
