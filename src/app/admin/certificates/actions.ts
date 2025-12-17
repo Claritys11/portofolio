@@ -22,7 +22,7 @@ async function readCertificatesFile(): Promise<Certificate[]> {
     } catch (error) {
         console.error('Error reading certificates data:', error);
         // If the file doesn't exist or is empty, return an empty array.
-        if (error.code === 'ENOENT') {
+        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: unknown }).code === 'ENOENT') {
             return [];
         }
         throw error;

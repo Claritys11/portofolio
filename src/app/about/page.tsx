@@ -38,9 +38,8 @@ export default function AboutPage() {
                     <h3 className="font-headline text-xl font-semibold">My Skills</h3>
                     <ul className="list-disc pl-5 mt-2 space-y-1">
                         <li>Web Development (React, Next.js, Node.js)</li>
-                        <li>Cybersecurity (Penetration Testing, Cryptography)</li>
+                        <li>Cybersecurity (Penetration Testing (Web Exploits), Forensic, PWN (still learning))</li>
                         <li>Database Management (MongoDB, SQL)</li>
-                        <li>Cloud & DevOps (Docker, CI/CD)</li>
                     </ul>
                 </div>
                 <div>

@@ -10,7 +10,7 @@ export default async function SuggestContentPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <PageHeader
         title="Suggest Content Ideas"
-        description="Use AI to brainstorm new blog post ideas based on existing content and trends."
+        description="Use AI to brainstorm new blog post ideas based on existing content and trends. (This thing is doesn't work for now. Because I don't have API left :heartbreak:)"
       />
       <main className="py-8">
         <SuggestionForm existingArticles={existingArticles} />
