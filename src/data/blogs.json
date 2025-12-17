@@ -20,25 +20,6 @@
     }
   },
   {
-    "slug": "exploring-nextjs-app-router",
-    "title": "Exploring the New Next.js App Router",
-    "description": "A deep dive into the new app router in Next.js 13, its features, and how it compares to the pages router.",
-    "date": "2023-10-26",
-    "category": "Blog",
-    "tags": [
-      "Web",
-      "National"
-    ],
-    "image": {
-      "id": "post-1",
-      "description": "Cover image for post 1",
-      "imageUrl": "https://i.ibb.co/QFgSwkR/ai-generated-8749439-1280.jpg",
-      "imageHint": "technology code"
-    },
-    "content": "\n      <h2 class=\"text-2xl font-bold mb-4\">Introduction</h2>\n      <p class=\"mb-4\">The Next.js App Router, introduced in version 13, is a significant evolution in how we build web applications with React. It leverages React Server Components to provide a more powerful and flexible architecture.</p>\n      <h2 class=\"text-2xl font-bold mb-4\">Key Features</h2>\n      <ul class=\"list-disc list-inside mb-4\">\n        <li>Server Components by default</li>\n        <li>Simplified data fetching with async/await</li>\n        <li>Nested layouts and route groups</li>\n        <li>Improved performance and smaller bundle sizes</li>\n      </ul>\n      <blockquote class=\"pl-4 italic border-l-4 my-4\">\n        \"The App Router has completely changed my development workflow for the better.\"\n      </blockquote>\n      <p>This post will walk you through setting up a new project with the App Router, creating layouts, fetching data, and deploying your application.</p>\n    ",
-    "readingTime": 1
-  },
-  {
     "slug": "hackthebox-challenge-writeup",
     "title": "HackTheBox - \"Lame\" Write-up",
     "description": "A step-by-step walkthrough of the \"Lame\" machine on HackTheBox, covering enumeration, exploitation, and privilege escalation.",

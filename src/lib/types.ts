@@ -28,6 +28,7 @@ export type Link = {
 };
 
 export type Certificate = {
+  id: string;
   title: string;
   issuer: string;
   year: string;
