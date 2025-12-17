@@ -3,25 +3,23 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { revalidatePath } from 'next/cache';
-import type { Certificate } from '@/lib/types';
+import { z } from 'zod';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import type { Certificate, Post } from '@/lib/types';
 
-const dataFilePath = join(process.cwd(), 'src/lib/certificates-data.ts');
+// --- DATA FILE PATHS ---
+const CERTIFICATES_DATA_PATH = join(process.cwd(), 'src/lib/certificates-data.ts');
+const POSTS_DATA_PATH = join(process.cwd(), 'src/data/blogs.json');
 
+// --- CERTIFICATE DATA HELPERS ---
 async function readCertificatesFile(): Promise<Certificate[]> {
     try {
-        const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-        // This is a simplified parser. It assumes the array is exported as `certificates`.
+        const fileContent = await fs.readFile(CERTIFICATES_DATA_PATH, 'utf-8');
         const match = fileContent.match(/export const certificates: Certificate\[] = ([\s\S]*?);/);
-        if (!match) {
-            console.error("Could not find certificates array in the data file.");
-            return [];
-        }
-        // WARNING: Using eval is a security risk, but for this prototype it's the simplest way to parse the object literal.
-        // A real implementation should use a proper data store like a JSON file or a database.
+        if (!match) return [];
         return eval(match[1]);
     } catch (error) {
-        console.error('Error reading certificates data:', error);
-        // If the file doesn't exist or is empty, return an empty array.
         if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: unknown }).code === 'ENOENT') {
             return [];
         }
@@ -31,41 +29,66 @@ async function readCertificatesFile(): Promise<Certificate[]> {
 
 async function writeCertificatesFile(certificates: Certificate[]): Promise<void> {
     const fileContent = `import type { Certificate } from './types';\n\nexport const certificates: Certificate[] = ${JSON.stringify(certificates, null, 2)};\n`;
-    await fs.writeFile(dataFilePath, fileContent, 'utf-8');
+    await fs.writeFile(CERTIFICATES_DATA_PATH, fileContent, 'utf-8');
     revalidatePath('/about');
     revalidatePath('/admin/certificates');
 }
 
+// --- POST DATA HELPERS ---
+async function readPostsFile(): Promise<Post[]> {
+    const fileContent = await fs.readFile(POSTS_DATA_PATH, 'utf-8');
+    return JSON.parse(fileContent);
+}
+
+async function writePostsFile(posts: Post[]): Promise<void> {
+    await fs.writeFile(POSTS_DATA_PATH, JSON.stringify(posts, null, 2), 'utf-8');
+    revalidatePath('/');
+    revalidatePath('/archives');
+}
+
+// --- CERTIFICATE ACTIONS ---
 export async function createCertificate(data: Omit<Certificate, 'id'>) {
     const certificates = await readCertificatesFile();
-    const newCertificate = { ...data };
+    const newCertificate = { ...data, id: Date.now().toString() };
     certificates.push(newCertificate);
     await writeCertificatesFile(certificates);
     return newCertificate;
 }
 
-// The `index` parameter is used for simplicity. In a real app, you'd use a unique ID.
 export async function updateCertificate(index: number, data: Certificate) {
     const certificates = await readCertificatesFile();
-    if (index < 0 || index >= certificates.length) {
-        throw new Error('Certificate not found');
-    }
+    if (index < 0 || index >= certificates.length) throw new Error('Certificate not found');
     certificates[index] = data;
     await writeCertificatesFile(certificates);
     return data;
 }
 
-// The `index` parameter is used for simplicity. In a real app, you'd use a unique ID.
 export async function deleteCertificate(index: number) {
     const certificates = await readCertificatesFile();
-    if (index < 0 || index >= certificates.length) {
-        throw new Error('Certificate not found');
-    }
+    if (index < 0 || index >= certificates.length) throw new Error('Certificate not found');
     const deleted = certificates.splice(index, 1);
     await writeCertificatesFile(certificates);
     return deleted[0];
 }
 
+// --- POST ACTIONS ---
+export async function deletePost(slug: string) {
+    try {
+        const posts = await readPostsFile();
+        const updatedPosts = posts.filter(post => post.slug !== slug);
+        if (posts.length === updatedPosts.length) {
+            return { success: false, message: 'Post not found.' };
+        }
+        await writePostsFile(updatedPosts);
+        return { success: true, message: 'Post deleted successfully.' };
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        return { success: false, message: 'An error occurred while deleting the post.' };
+    }
+}
+
+
+// --- AUTHENTICATION ACTION ---
 export async function authenticate(prevState: { error: string | undefined }, formData: FormData) {
     try {
       const validatedFields = z.object({ password: z.string() }).safeParse({
@@ -99,9 +122,10 @@ export async function authenticate(prevState: { error: string | undefined }, for
         return { error: 'Incorrect secret.' };
       }
     } catch (error) {
-      if (error instanceof AuthError) {
-        return { error: 'Authentication failed.' };
-      }
-      return { error: 'An unexpected error occurred.' };
+        if (error instanceof Error && (error as any).type === 'NEXT_REDIRECT') {
+            throw error;
+        }
+        console.error('Authentication error:', error);
+        return { error: 'An unexpected error occurred.' };
     }
-  }
+}
